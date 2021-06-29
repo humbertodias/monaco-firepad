@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase.js"></script>
   <!-- Firepad -->
   <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.5.3/firepad.css" />
   <script src="https://cdn.firebase.com/libs/firepad/1.5.3/firepad.js"></script>
   <!-- Loader.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs/loader.js"></script>
+
+
   <style>
     html, body {
       margin: 0;
@@ -55,7 +57,7 @@
     };
     firebase.initializeApp(config);
     //// Create Monaco and firepad.
-    require.config({ paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs'}});
+    require.config({ paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.25.2/min/vs'}});
       require(['vs/editor/editor.main'], function() {
         //// Initialize the Monaco editor
         editor = monaco.editor.create(
@@ -67,6 +69,22 @@
         );
         //// Initialize the Firepad editor
         Firepad.fromMonaco(firebase.database().ref("jsfiddle/macosx"), editor);
+
+        // Initialize Firebase
+        const db = firebase.firestore();
+        db.settings({
+            timestampInSnapshots: true
+        });
+        db.collection("users").get()
+            .then(cols => {
+                var result = document.querySelector("#result");
+                result.innerHTML = "";
+                cols.docs.forEach((e) => {
+                    result.innerHTML += JSON.stringify(e.data());
+                    result.innerHTML += "<br>";
+                });
+            });
+
       });
     }
 </script>
