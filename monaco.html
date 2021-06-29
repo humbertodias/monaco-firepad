@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <script src="https://www.gstatic.com/firebasejs/5.5.4/firebase.js"></script>
+  <!-- Firepad -->
+  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.5.3/firepad.css" />
+  <script src="https://cdn.firebase.com/libs/firepad/1.5.3/firepad.js"></script>
+  <!-- Loader.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs/loader.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    body {
+      position: relative;
+      overflow: hidden
+    }
+    #header {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 1.9em;
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      border: solid #ccc;
+      border-width: 0 0 0.1em 0;
+    }
+    #header > h1 {
+      font-size: 1em;
+      padding: 0 0.3em;
+    }
+    #firepad {
+      position: absolute;
+      top: 2em;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body onload="init()">
+<div id="header"><h1>Mac OSX (LF)</h1></div>
+<div id="firepad"></div>
+<script>
+  function init() {
+    var config = {
+      apiKey: 'AIzaSyCOURuYrEWk6soaPbb0xU9vvt-yWpabHfU',
+      databaseURL: "https://denolopment.firebaseio.com",
+      projectId: "denolopment",
+    };
+    firebase.initializeApp(config);
+    //// Create Monaco and firepad.
+    require.config({ paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs'}});
+      require(['vs/editor/editor.main'], function() {
+        //// Initialize the Monaco editor
+        editor = monaco.editor.create(
+          document.getElementById('firepad'),
+          {
+            language: 'javascript',
+            automaticLayout: true
+          }
+        );
+        //// Initialize the Firepad editor
+        Firepad.fromMonaco(firebase.database().ref("jsfiddle/macosx"), editor);
+      });
+    }
+</script>
+</body>
+</html>
