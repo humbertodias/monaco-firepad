@@ -1,6 +1,6 @@
 ### monaco-firepad
 
-    python3 -m http.server
+    make cert run
 
 https://localhost:8443
 

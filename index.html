@@ -51,9 +51,9 @@
 <script>
   function init() {
     var config = {
-      apiKey: 'AIzaSyCOURuYrEWk6soaPbb0xU9vvt-yWpabHfU',
-      databaseURL: "https://denolopment.firebaseio.com",
-      projectId: "denolopment",
+      apiKey: 'AIzaSyDWrzi555j8alpYxhX-nCmqy5JiZ_xxLb0',
+      databaseURL: "https://monaco-dfe6e-default-rtdb.firebaseio.com/",
+      projectId: "monaco-dfe6e",
     };
     firebase.initializeApp(config);
     //// Create Monaco and firepad.
@@ -67,23 +67,17 @@
             automaticLayout: true
           }
         );
+        var dbRef = firebase.database().ref("jsfiddle/macosx")
         //// Initialize the Firepad editor
-        Firepad.fromMonaco(firebase.database().ref("jsfiddle/macosx"), editor);
-
-        // Initialize Firebase
-        const db = firebase.firestore();
-        db.settings({
-            timestampInSnapshots: true
-        });
-        db.collection("users").get()
-            .then(cols => {
-                var result = document.querySelector("#result");
-                result.innerHTML = "";
-                cols.docs.forEach((e) => {
-                    result.innerHTML += JSON.stringify(e.data());
-                    result.innerHTML += "<br>";
-                });
+        var firepadMonaco = Firepad.fromMonaco(dbRef, editor);
+        var usersRef = dbRef.child('users');
+        usersRef.on('value', function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+              var childData = childSnapshot.val();
+              console.log("user", childData)
             });
+        });
+
 
       });
     }
