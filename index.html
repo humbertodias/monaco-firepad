@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase.js"></script>
   <!-- Firepad -->
-  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.5.3/firepad.css" />
-  <script src="https://cdn.firebase.com/libs/firepad/1.5.3/firepad.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firepad@1.5.11/dist/firepad.css" />
+  <script src="https://cdn.jsdelivr.net/npm/firepad@1.5.11/dist/firepad.js"></script>
+
   <!-- Loader.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs/loader.js"></script>
 
 
   <style>
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       height: 100%;
     }
+
     body {
       position: relative;
       overflow: hidden
     }
+
     #header {
       position: absolute;
       top: 0;
@@ -32,10 +37,12 @@
       border: solid #ccc;
       border-width: 0 0 0.1em 0;
     }
-    #header > h1 {
+
+    #header>h1 {
       font-size: 1em;
       padding: 0 0.3em;
     }
+
     #firepad {
       position: absolute;
       top: 2em;
@@ -45,20 +52,23 @@
     }
   </style>
 </head>
+
 <body onload="init()">
-<div id="header"><h1>Mac OSX (LF)</h1></div>
-<div id="firepad"></div>
-<script>
-  function init() {
-    var config = {
-      apiKey: 'AIzaSyDWrzi555j8alpYxhX-nCmqy5JiZ_xxLb0',
-      databaseURL: "https://monaco-dfe6e-default-rtdb.firebaseio.com/",
-      projectId: "monaco-dfe6e",
-    };
-    firebase.initializeApp(config);
-    //// Create Monaco and firepad.
-    require.config({ paths: {'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.25.2/min/vs'}});
-      require(['vs/editor/editor.main'], function() {
+  <div id="header">
+    <h1>Mac OSX (LF)</h1>
+  </div>
+  <div id="firepad"></div>
+  <script>
+    function init() {
+      var config = {
+        apiKey: 'AIzaSyDWrzi555j8alpYxhX-nCmqy5JiZ_xxLb0',
+        databaseURL: "https://monaco-dfe6e-default-rtdb.firebaseio.com/",
+        projectId: "monaco-dfe6e",
+      };
+      firebase.initializeApp(config);
+      //// Create Monaco and firepad.
+      require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.25.2/min/vs' } });
+      require(['vs/editor/editor.main'], function () {
         //// Initialize the Monaco editor
         editor = monaco.editor.create(
           document.getElementById('firepad'),
@@ -67,20 +77,26 @@
             automaticLayout: true
           }
         );
+        var userId = `user-${Math.floor(Math.random()*1000)}`
+        var options = {
+          userId: userId
+        }
         var dbRef = firebase.database().ref("jsfiddle/macosx")
         //// Initialize the Firepad editor
-        var firepadMonaco = Firepad.fromMonaco(dbRef, editor);
+        var firepadMonaco = Firepad.fromMonaco(dbRef, editor, options);
         var usersRef = dbRef.child('users');
-        usersRef.on('value', function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-              var childData = childSnapshot.val();
-              console.log("user", childData)
-            });
+        usersRef.on('value', (users)=> {
+          users.forEach((child)=> {
+            var childUserId = child.ref.key;
+            var childData = child.val();
+            console.log(childUserId, childData)
+          });
         });
 
 
       });
     }
-</script>
+  </script>
 </body>
+
 </html>
