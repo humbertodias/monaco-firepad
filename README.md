@@ -1,4 +1,6 @@
-### monaco-firepad
+Monaco editor collaborative using Firepad
+
+### Run
 
     make cert run
 
